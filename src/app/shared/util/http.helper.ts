@@ -1,0 +1,39 @@
+import { Response } from "express";
+
+export class HttpHelper {
+  public static sucess(
+    res: Response,
+    data: any,
+    message?: string,
+    code?: number,
+    cache?: boolean
+  ) {
+    return res.status(code ?? 200).send({
+      ok: true,
+      cache: cache ?? false,
+      data,
+      message,
+    });
+  }
+
+  public static serverError(res: Response, message?: string, code?: number) {
+    return res.status(code ?? 500).send({
+      ok: false,
+      message,
+    });
+  }
+
+  public static badRequest(res: Response, message?: string, code?: number) {
+    return res.status(code ?? 400).send({
+      ok: false,
+      message,
+    });
+  }
+
+  public static unauthorized(res: Response, message?: string, code?: number) {
+    return res.status(code ?? 401).send({
+      ok: false,
+      message,
+    });
+  }
+}
