@@ -2,9 +2,6 @@ import { DataBaseConnection } from "../../../../src/main/database/typeorm.connec
 import { createServer } from "../../../../src/main/config/server.config";
 import request from "supertest";
 import { loginUserValidator } from "../../../../src/app/features/user/validators/loginUser.validator";
-import { LoginUserUsecase } from "../../../../src/app/features/user/usecases/loginUser.usecase";
-import { User } from "../../../../src/app/models/user.model";
-import { UserEntity } from "../../../../src/app/shared/entities/users.entity";
 import { faker } from "@faker-js/faker";
 
 describe("loginUserValidator", () => {

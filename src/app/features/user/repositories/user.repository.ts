@@ -28,17 +28,6 @@ export class UserRepository {
     return userEntity;
   }
 
-  public async getByUserName(username: string) {
-    const result = await this._repository.findOneBy({
-      userName: username,
-    });
-
-    if (!result) {
-      return null;
-    }
-
-    return this.mapEntityToModel(result);
-  }
   public async getByEmail(email: string) {
     const result = await this._repository.findOneBy({
       userEmail: email,
@@ -49,16 +38,6 @@ export class UserRepository {
     }
 
     return this.mapEntityToModel(result);
-  }
-
-  public async getAll() {
-    const result = await this._repository.find();
-
-    if (!result) {
-      return null;
-    }
-
-    return result.map((user) => this.mapEntityToModel(user));
   }
 
   private mapEntityToModel(entity: UserEntity) {
