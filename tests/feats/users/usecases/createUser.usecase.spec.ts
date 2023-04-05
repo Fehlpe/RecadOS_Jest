@@ -3,7 +3,7 @@ import { CreateUserUseCase } from "../../../../src/app/features/user/usecases/cr
 import { User } from "../../../../src/app/models/user.model";
 import { DataBaseConnection } from "../../../../src/main/database/typeorm.connection";
 
-describe("Get growdever usecase test", () => {
+describe("Create user usecase", () => {
   beforeAll(async () => {
     await DataBaseConnection.connect();
   });
