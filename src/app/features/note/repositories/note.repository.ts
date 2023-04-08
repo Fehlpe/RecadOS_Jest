@@ -77,8 +77,4 @@ export class NoteRepository {
       : { userId };
     return await this._repository.find({ where });
   }
-
-  private mapEntityToModel(entity: NoteEntity) {
-    return Note.create(entity.noteTitle, entity.noteDescription, entity.userId);
-  }
 }
