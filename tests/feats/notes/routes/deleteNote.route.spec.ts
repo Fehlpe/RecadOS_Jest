@@ -2,10 +2,10 @@ import { createServer } from "../../../../src/main/config/server.config";
 import request from "supertest";
 import { DataBaseConnection } from "../../../../src/main/database/typeorm.connection";
 import { RedisConnection } from "../../../../src/main/database/redis.connection";
-import { GetUserNotesUseCase } from "../../../../src/app/features/note/usecases/getUserNotes.usecase";
 import { NoteEntity } from "../../../../src/app/shared/entities/notes.entity";
+import { DeleteNoteUseCase } from "../../../../src/app/features/note/usecases/deleteNote.usecase";
 
-describe("Get notes route test", () => {
+describe("Delete notes route test", () => {
   const noteCreatedAt = new Date("2023-04-04T22:25:59.912Z");
   const noteUpdatedAt = new Date("2023-04-05T01:26:01.220Z");
 
@@ -32,15 +32,15 @@ describe("Get notes route test", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest
-      .spyOn(GetUserNotesUseCase.prototype, "execute")
-      .mockResolvedValue([noteEntity]);
+      .spyOn(DeleteNoteUseCase.prototype, "execute")
+      .mockResolvedValue({ raw: [], affected: 1 });
   });
 
   const server = createServer();
 
   test("Deve retornar status 200", async () => {
     const result = await request(server)
-      .get("/note/user?userId=1678926436743")
+      .delete("/note/user/1679407813112")
       .send();
 
     expect(result).toBeDefined();
@@ -49,19 +49,18 @@ describe("Get notes route test", () => {
     expect(result.body.ok).toBeTruthy();
     expect(result.body).toHaveProperty("message");
     expect(result.body).toHaveProperty("data");
-    expect(result.body.message).toBe("Notes returned");
-    expect((result.body.data as any[]).length).toBeGreaterThan(0);
+    expect(result.body.message).toBe("Note deleted");
   });
 
   test("Deve retornar erro 500 se houver uma exceção", async () => {
     jest
-      .spyOn(GetUserNotesUseCase.prototype, "execute")
+      .spyOn(DeleteNoteUseCase.prototype, "execute")
       .mockImplementation(() => {
         throw new Error("Erro de Teste");
       });
 
     const result = await request(server)
-      .get("/note/user?userId=1678926436743")
+      .delete("/note/user/1679407813112")
       .send();
     expect(result).toBeDefined();
     expect(result.statusCode).toBe(500);

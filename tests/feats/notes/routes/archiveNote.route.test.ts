@@ -2,22 +2,9 @@ import { DataBaseConnection } from "../../../../src/main/database/typeorm.connec
 import { createServer } from "../../../../src/main/config/server.config";
 import request from "supertest";
 import { NoteEntity } from "../../../../src/app/shared/entities/notes.entity";
-import { CreateNoteUseCase } from "../../../../src/app/features/note/usecases/createNote.usecase";
+import { ArchiveNoteUseCase } from "../../../../src/app/features/note/usecases/archiveNote.usecase";
 
-describe("Create note route test", () => {
-  const noteCreatedAt = new Date("2023-04-04T22:25:59.912Z");
-  const noteUpdatedAt = new Date("2023-04-05T01:26:01.220Z");
-
-  const note: NoteEntity = {
-    noteId: "1680647159912",
-    noteTitle: "teste1234",
-    noteDescription: "teste1234",
-    noteArchived: false,
-    userId: "1678926436743",
-    noteCreatedAt,
-    noteUpdatedAt,
-  } as NoteEntity;
-
+describe("Archive Notes route test", () => {
   beforeAll(async () => {
     await DataBaseConnection.connect();
   });
@@ -32,15 +19,16 @@ describe("Create note route test", () => {
 
   const server = createServer();
 
-  test("Deve retornar status 200 se o usuario for criado", async () => {
-    jest.spyOn(CreateNoteUseCase.prototype, "execute").mockResolvedValue(note);
-    const result = await request(server).post("/note").send({
-      title: "teste1234",
-      description: "teste1234",
-      userId: "1678926436743",
-    });
+  test("Deve retornar status 200 se receber as notas", async () => {
+    const archiveNoteMock = jest.fn();
+    jest
+      .spyOn(ArchiveNoteUseCase.prototype, "execute")
+      .mockImplementation(archiveNoteMock);
+    const result = await request(server)
+      .put("/note/1677623494848/1677623503615/archive")
+      .send({});
     expect(result).toBeDefined();
-    expect(result.body.message).toBe("Note created");
+    expect(result.body.message).toBe("Note archived");
     expect(result.statusCode).toBe(200);
     expect(result.body).toHaveProperty("ok");
     expect(result.body.ok).toBeTruthy();
@@ -48,15 +36,13 @@ describe("Create note route test", () => {
 
   test("Deve retornar status 500 se tiver erro", async () => {
     jest
-      .spyOn(CreateNoteUseCase.prototype, "execute")
+      .spyOn(ArchiveNoteUseCase.prototype, "execute")
       .mockImplementation(() => {
         throw new Error("Erro de Teste");
       });
-    const result = await request(server).post("/note").send({
-      title: "teste1234",
-      description: "teste1234",
-      userId: "1678926436743",
-    });
+    const result = await request(server)
+      .put("/note/1677623494848/1677623503615/archive")
+      .send({});
     expect(result).toBeDefined();
     expect(result.statusCode).toBe(500);
     expect(result.body).toHaveProperty("ok");
